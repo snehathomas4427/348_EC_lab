@@ -8,7 +8,10 @@ double extractNumeric(const string& str){
     bool sign = false;     // tracks if a sign is present
     double value = 0.0; // tracks the actual value
     int decimal = 0; // checks for how many numbers are after the decimal
-
+    
+    if (str.length() > 20){
+        return -999999.99;
+    }
     for (int i = 0; i < str.length(); i++){
         if (str[i] >= '0' && str[i] <= '9'){
             value = (value * 10) + (str[i] - '0'); // str[i] - '0' subtracts the ASCII value of the character '0' from str[i]. (turns a char to an int)
@@ -23,14 +26,16 @@ double extractNumeric(const string& str){
                 hasdecimal = true;
             }
         }
+
         else if (str[i] == '+' || str[i]== '-'){
-            if (sign == true && i != 0){ // if there is another sign (+/-) that's not the first character -> invalid input
-                return -999999.99;
-            }else{
-                sign = true;
-                if (str[i] == '-'){
-                    value = value*-1;
+            if (i == 0){
+                if (str[i]== '-'){
+                    value = -value;
+                    
                 }
+                sign = true;
+            } else if (sign == true){
+                return -999999.99;
             }
         }
         else{
@@ -38,7 +43,18 @@ double extractNumeric(const string& str){
         }
     }
     if (hasdecimal == true){
-        value = value/pow(10,decimal);
+        if (str[0]=='-'){
+            return -value/pow(10,decimal);
+        } else{
+            return value/pow(10,decimal);
+        }
+        
+    }else{
+        if (str[0]=='-'){
+            return -value/pow(10,decimal);
+        } else{
+            return value/pow(10,decimal);
+        }
     }
     return value;
 }
